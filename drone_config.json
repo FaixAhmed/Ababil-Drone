@@ -1,0 +1,126 @@
+{
+    "ALPHA_ACCEL": 0.98,
+    "ALPHA_MAG": 0.02,
+    "BASE_THROTTLE_DUTY": 6.5,
+    "BATTERY_CHECK_INTERVAL": 5.0,
+    "BOOT_HOLD_TIME_SEC": 5,
+    "CONTROLLER_PITCH_ANGLE_SCALE": 20.0,
+    "CONTROLLER_REINIT_INTERVAL": 5.0,
+    "CONTROLLER_ROLL_ANGLE_SCALE": 20.0,
+    "CONTROLLER_YAW_RATE_SCALE": 90.0,
+    "CRITICAL_BATTERY_THRESHOLD_PERCENT": 7.0,
+    "EARTH_RADIUS_KM": 6371,
+    "ENABLE_GPS_FAILSAFE": true,
+    "ENABLE_RC_FAILSAFE": true,
+    "ESC_PINS": [
+        17,
+        18,
+        27,
+        22
+    ],
+    "GCS_COMMAND_PORT": 14550,
+    "GCS_DRONE_IP": "0.0.0.0",
+    "GCS_TELEMETRY_SEND_INTERVAL_SEC": 0.2,
+    "GCS_TELEMETRY_TARGET_IP": "192.168.1.100",
+    "GCS_TELEMETRY_TARGET_PORT": 14551,
+    "GPS_BAUDRATE": 9600,
+    "GPS_FAILSAFE_ACTION": "LAND",
+    "GPS_FAILSAFE_MIN_FIX_QUALITY": 1,
+    "GPS_FAILSAFE_MIN_SATELLITES": 4,
+    "GPS_FAILSAFE_TIMEOUT_SEC": 5.0,
+    "GPS_POLL_INTERVAL": 0.2,
+    "GPS_PORT": "/dev/ttyAMA0",
+    "GPS_TIMEOUT": 1,
+    "HUD_TEXT_COLOR": [
+        0,
+        255,
+        0
+    ],
+    "IMU_ACCEL_OFFSETS": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+    },
+    "IMU_GYRO_OFFSETS": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+    },
+    "IMU_MAG_OFFSETS": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+    },
+    "IMU_MAG_SCALE_FACTORS": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+    },
+    "IMU_READ_INTERVAL": 0.005,
+    "LOG_FILE": "drone_flight.log",
+    "LOG_LEVEL": "INFO",
+    "LOW_BATTERY_THRESHOLD_PERCENT": 15.0,
+    "MAIN_LOOP_HZ": 50,
+    "MAX_PWM_DUTY": 10.0,
+    "MAX_SAFE_DISTANCE_CM": 200,
+    "MAX_SPEED_PROXY": 1.0,
+    "MIN_PWM_DUTY": 5.0,
+    "MIN_SAFE_DISTANCE_CM": 30,
+    "MPU6050_ADDRESS": 104,
+    "PID_PITCH_KD": 0.6,
+    "PID_PITCH_KI": 0.01,
+    "PID_PITCH_KP": 1.5,
+    "PID_PITCH_LIMITS": [
+        -3,
+        3
+    ],
+    "PID_ROLL_KD": 0.6,
+    "PID_ROLL_KI": 0.01,
+    "PID_ROLL_KP": 1.5,
+    "PID_ROLL_LIMITS": [
+        -3,
+        3
+    ],
+    "PID_YAW_KD": 0.8,
+    "PID_YAW_KI": 0.01,
+    "PID_YAW_KP": 2.0,
+    "PID_YAW_LIMITS": [
+        -5,
+        5
+    ],
+    "PS5_BUTTON_O": 1,
+    "PS5_BUTTON_X": 0,
+    "PWM_FREQ": 50,
+    "RC_FAILSAFE_ACTION": "RTH",
+    "RC_FAILSAFE_TIMEOUT_SEC": 3.0,
+    "RETURN_HOME_MIN_DIST_METERS": 5,
+    "RTH_ALTITUDE_METERS": 20,
+    "SHUTDOWN_HOLD_TIME_SEC": 3,
+    "SPEED_TO_DISTANCE_FACTOR_CM_PER_UNIT": 70,
+    "STALE_GPS_DATA_THRESHOLD_SEC": 2.0,
+    "STALE_IMU_DATA_THRESHOLD_SEC": 0.2,
+    "THROTTLE_RANGE_MODIFIER": 2.5,
+    "ULTRASONIC_PINS": {
+        "back": {
+            "echo": 24,
+            "trig": 23
+        },
+        "front": {
+            "echo": 6,
+            "trig": 5
+        },
+        "left": {
+            "echo": 19,
+            "trig": 13
+        },
+        "right": {
+            "echo": 21,
+            "trig": 20
+        }
+    },
+    "ULTRASONIC_TIMEOUT": 0.05,
+    "VIDEO_FPS": 30,
+    "VIDEO_HEIGHT": 480,
+    "VIDEO_STREAM_PORT": 8000,
+    "VIDEO_WIDTH": 640
+}
