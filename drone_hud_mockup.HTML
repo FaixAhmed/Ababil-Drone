@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drone Graphical HUD Mock-up</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Consolas', 'Monaco', monospace;
+            background-color: #1a1a1a; 
+            color: #00FF00; 
+            margin: 0; padding: 0; overflow: hidden;
+        }
+        .hud-container {
+            position: relative;
+            width: 100vw; height: 100vh;
+            background-image: url('https://placehold.co/1280x720/1a1a1a/333333?text=Camera+Feed');
+            background-size: cover; background-position: center;
+            overflow: hidden; 
+        }
+        .hud-text-block { 
+            position: absolute; 
+            padding: 8px;
+            font-size: clamp(9px, 1.3vw, 14px);
+            text-shadow: 1px 1px 1px black;
+            line-height: 1.25;
+            z-index: 100; 
+        }
+        .top-left { top: 10px; left: 10px; text-align: left; }
+        .top-right { top: 10px; right: 10px; text-align: right; }
+        .bottom-left { bottom: 10px; left: 10px; text-align: left; }
+        .bottom-center-message { 
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            font-weight: bold;
+            font-size: clamp(10px, 1.5vw, 16px);
+        }
+        .bottom-right-cluster { 
+            bottom: 10px; right: 10px; 
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+        }
+
+        /* Full Screen Artificial Horizon Elements */
+        .full-screen-horizon-container {
+            position: absolute;
+            width: 100%; 
+            height: 100%;
+            left: 0; 
+            top: 0;
+            transform-origin: center center; /* For roll */
+            overflow: hidden; 
+            z-index: 1; 
+        }
+        .horizon-sky-full { /* Now transparent, only for structure if needed, or remove */
+            position: absolute;
+            left: -50%; 
+            width: 200%; 
+            height: 50%; 
+            background-color: transparent; /* REMOVED SKY COLOR */
+            transform-origin: center bottom; 
+        }
+        .horizon-ground-full { /* Now transparent */
+            position: absolute;
+            left: -50%; 
+            width: 200%; 
+            height: 50%; 
+            bottom: 0;
+            background-color: transparent; /* REMOVED GROUND COLOR */
+            transform-origin: center top; 
+        }
+        .explicit-horizon-line-full {
+            position: absolute;
+            left: -50%; 
+            width: 200%; 
+            height: 2px; /* Can make thicker if desired */
+            background-color: rgba(255, 255, 255, 0.85); /* Slightly more opaque white line */
+            top: 50%; 
+            transform: translateY(-1px);
+            z-index: 2; 
+        }
+
+        .fixed-aircraft-symbol { 
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 80px; height: 40px; /* Increased height for chevron */
+            transform: translate(-50%, -50%);
+            z-index: 50; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .aircraft-chevron {
+            color: #FFFF00; /* Yellow */
+            font-size: clamp(14px, 2vw, 20px);
+            line-height: 0.8; /* Adjust to position tightly above */
+            font-weight: bold;
+            margin-bottom: 1px; /* Space between chevron and rest of symbol */
+        }
+        .aircraft-symbol-body { /* Container for original symbol parts */
+            position: relative;
+            width: 80px; /* Original width */
+            height: 25px; /* Original height */
+        }
+        .fixed-aircraft-symbol .aircraft-symbol-body > div { background-color: #FFFF00; /* Yellow */ }
+        .fixed-aircraft-wing { position: absolute; top: 50%; left:0; width: 100%; height: 4px; transform: translateY(-50%);}
+        .fixed-aircraft-tail-v { position: absolute; bottom: calc(50% - 2px); left:50%; width:4px; height:45%; transform: translateX(-50%);}
+        .fixed-aircraft-dot { position: absolute; top:50%; left:50%; width:10px; height:10px; border-radius:50%; transform: translate(-50%,-50%); border: 1px solid #555;}
+
+
+        /* Cross Compass Styles (Bottom Right) */
+        .cross-compass-container-corner {
+            position: relative; 
+            width: clamp(80px, 15vw, 120px); 
+            height: clamp(80px, 15vw, 120px);
+            border: 1px solid #666;
+            border-radius: 50%; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(0,0,0,0.3);
+            z-index: 20;
+        }
+        .compass-rose-corner { 
+            position: absolute;
+            width: 90%; height: 90%;
+            transform-origin: center center;
+        }
+        .compass-rose-corner .arm {
+            position: absolute;
+            background-color: #FFFFFF;
+            display: flex; align-items: center; justify-content: center;
+            font-size: clamp(8px, 1.2vw, 10px); font-weight: bold; color: #00FF00;
+        }
+        .compass-rose-corner .north { top: 0; left: 50%; width: 2px; height: 50%; transform: translateX(-50%); }
+        .compass-rose-corner .east { top: 50%; right: 0; width: 50%; height: 2px; transform: translateY(-50%); justify-content: flex-start; padding-left: 2px;}
+        .compass-rose-corner .south { bottom: 0; left: 50%; width: 2px; height: 50%; transform: translateX(-50%); justify-content: flex-end; padding-bottom: 2px;}
+        .compass-rose-corner .west { top: 50%; left: 0; width: 50%; height: 2px; transform: translateY(-50%); justify-content: flex-end; padding-right: 2px;}
+        .compass-rose-corner .north span { position:absolute; top: -12px; } 
+        .compass-rose-corner .south span { position:absolute; bottom: -12px; }
+        .compass-rose-corner .east span { position:absolute; right: -10px; }
+        .compass-rose-corner .west span { position:absolute; left: -10px; }
+
+        .compass-fixed-pointer-corner { 
+            position: absolute;
+            top: 3px; 
+            left: 50%; transform: translateX(-50%);
+            width: 0; height: 0;
+            border-left: 5px solid transparent; border-right: 5px solid transparent;
+            border-bottom: 8px solid #00FF00; 
+        }
+         .compass-target-bug-corner { 
+            position: absolute;
+            width: 6px; height: 6px;
+            background-color: #FF00FF; 
+            border-radius: 50%;
+            transform-origin: center center;
+            top: 50%; left: 50%; 
+            z-index: 1;
+        }
+        .current-heading-text-compass-corner {
+            font-size: clamp(9px, 1.1vw, 11px);
+            color: #00FF00;
+            margin-top: 2px; 
+            text-align: center; 
+        }
+
+        .status-text-block { 
+             text-align: right;
+        }
+        .status-armed { color: #33FF33; font-weight: bold; font-size: clamp(10px, 1.5vw, 16px); }
+        .status-disarmed { color: #FF3333; font-weight: bold; font-size: clamp(10px, 1.5vw, 16px); }
+        .warning-message { color: #FFA500; }
+        .critical-message { color: #FF0000; }
+        .home-arrow { font-size: clamp(1.2em, 2.5vw, 1.8em); transform-origin: center; display: inline-block; margin-left: 5px;}
+
+    </style>
+</head>
+<body>
+    <div class="hud-container">
+        <!-- Full Screen Artificial Horizon Elements (behind text) -->
+        <div class="full-screen-horizon-container" id="fullScreenHorizonContainer">
+            <div class="horizon-sky-full" id="horizonSkyFull"></div>   <!-- Kept for structure, but transparent -->
+            <div class="horizon-ground-full" id="horizonGroundFull"></div> <!-- Kept for structure, but transparent -->
+            <div class="explicit-horizon-line-full" id="explicitHorizonLineFull"></div>
+        </div>
+
+        <!-- Fixed Aircraft Symbol (center screen, above horizon graphics) -->
+        <div class="fixed-aircraft-symbol"> 
+            <div class="aircraft-chevron">^</div>
+            <div class="aircraft-symbol-body">
+                <div class="fixed-aircraft-wing"></div>
+                <div class="fixed-aircraft-tail-v"></div>
+                <div class="fixed-aircraft-dot"></div>
+            </div>
+        </div>
+
+        <!-- Text Telemetry Blocks -->
+        <div class="top-section">
+            <div class="hud-text-block top-left">
+                <div>T: <span id="time">HH:MM:SS.mmm</span></div>
+                <div>BAT: <span id="battery">100.0</span>%</div>
+                <div>GPS: <span id="gps_coords">NO FIX</span></div>
+                <div>FIX:<span id="gps_fix">0</span> SAT:<span id="gps_sats">0</span> Stale:<span id="gps_stale">T</span></div>
+                <div>HomeD: <span id="dist_home">N/A</span></div>
+            </div>
+            <div class="hud-text-block top-right">
+                <div>ALT(MSL): <span id="altitude">0.0</span>m</div>
+                <div>SPD(GS): <span id="speed">0.0</span>km/h</div>
+                <div>STATE: <span id="drone_state">INIT</span></div>
+                <div>IMU_STALE: <span id="imu_stale">F</span></div>
+                 <div>AH P:<span id="ah_pitch_val">0.0</span> R:<span id="ah_roll_val">0.0</span></div> 
+            </div>
+        </div>
+        
+        <div class="hud-text-block bottom-left">
+            <div>CTRL T:<span id="ctrl_throttle">0.00</span> P:<span id="ctrl_pitch">0.00</span></div>
+            <div>     R:<span id="ctrl_roll">0.00</span> YS:<span id="ctrl_yaw_stick">0.00</span></div>
+        </div>
+        
+        <div class="hud-text-block bottom-center-message">
+            <div id="status_message_display">SYSTEM OK</div>
+        </div>
+
+        <div class="hud-text-block bottom-right-cluster">
+            <div class="cross-compass-container-corner">
+                <div class="compass-rose-corner" id="compassRoseCorner">
+                    <div class="arm north"><span>N</span></div>
+                    <div class="arm east"><span>E</span></div>
+                    <div class="arm south"><span>S</span></div>
+                    <div class="arm west"><span>W</span></div>
+                </div>
+                <div class="compass-fixed-pointer-corner"></div>
+                <div class="compass-target-bug-corner" id="compassTargetBugCorner"></div>
+            </div>
+            <div class="current-heading-text-compass-corner"><span id="currentCompassValueCorner">0</span>&deg;</div>
+            <div class="status-text-block">
+                <span id="arm_status_corner" class="status-disarmed">DISARMED</span>
+                <span class="home-arrow" id="homeArrowCorner">&uarr;</span> 
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const fullScreenHorizonContainer = document.getElementById('fullScreenHorizonContainer');
+        const explicitHorizonLineFull = document.getElementById('explicitHorizonLineFull');
+
+        const compassRoseCorner = document.getElementById('compassRoseCorner');
+        const compassTargetBugCorner = document.getElementById('compassTargetBugCorner');
+        const currentCompassValueCorner = document.getElementById('currentCompassValueCorner');
+        const homeArrowCorner = document.getElementById('homeArrowCorner');
+        
+        const ahPitchVal = document.getElementById('ah_pitch_val');
+        const ahRollVal = document.getElementById('ah_roll_val');
+
+
+        function updateSimulatedHUD() {
+            const d = new Date();
+            document.getElementById('time').textContent = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}.${String(d.getMilliseconds()).padStart(3,'0').slice(0,3)}`;
+            
+            let pitch_deg = Math.random() * 60 - 30; 
+            let roll_deg = Math.random() * 90 - 45;  
+
+            ahPitchVal.textContent = pitch_deg.toFixed(1);
+            ahRollVal.textContent = roll_deg.toFixed(1);
+
+            // Full Screen Artificial Horizon Update
+            const pitch_offset_percent_for_line = pitch_deg * 0.8; 
+            explicitHorizonLineFull.style.top = `${50 - pitch_offset_percent_for_line}%`;
+            fullScreenHorizonContainer.style.transform = `rotate(${-roll_deg}deg)`;
+
+
+            // Cross Compass Update (Bottom Right)
+            let currentYaw = (parseFloat(currentCompassValueCorner.textContent) + (Math.random()*2-1)*3 + 360)%360;
+            let targetYaw = (currentYaw + Math.random()*60-30 + 360)%360;
+            
+            currentCompassValueCorner.textContent = currentYaw.toFixed(0);
+            compassRoseCorner.style.transform = `rotate(${-currentYaw}deg)`; 
+
+            let relativeTargetAngleDeg = (targetYaw - currentYaw + 360) % 360;
+            let relativeTargetAngleRad = relativeTargetAngleDeg * Math.PI / 180;
+            
+            const compassContainerElement = document.querySelector('.cross-compass-container-corner');
+            const compassRadius = compassContainerElement.offsetWidth / 2 * 0.80; 
+            const bugX = Math.sin(relativeTargetAngleRad) * compassRadius;
+            const bugY = -Math.cos(relativeTargetAngleRad) * compassRadius;
+            compassTargetBugCorner.style.transform = `translate(${bugX}px, ${bugY}px) translate(-50%, -50%)`;
+
+
+            // Home Arrow Update
+            let home_bearing_relative_to_north = Math.random()*360;
+            let home_arrow_display_angle = home_bearing_relative_to_north - currentYaw;
+            homeArrowCorner.style.transform = `rotate(${home_arrow_display_angle}deg)`;
+
+            // --- Existing text telemetry updates ---
+            document.getElementById('battery').textContent = (Math.random()*15 + 85).toFixed(1);
+            if (Math.random() < 0.8) {
+                document.getElementById('gps_coords').textContent = `${(Math.random()*0.1+52.4).toFixed(5)}N,${(Math.random()*0.1-1.9).toFixed(5)}W`;
+                document.getElementById('gps_fix').textContent = '3'; document.getElementById('gps_sats').textContent = Math.floor(Math.random()*6+7).toString();
+                document.getElementById('gps_stale').textContent = 'F'; document.getElementById('dist_home').textContent = (Math.random()*150).toFixed(1)+'m';
+            } else { 
+                document.getElementById('gps_coords').textContent = 'NO FIX'; document.getElementById('gps_fix').textContent = '0';
+                document.getElementById('gps_sats').textContent = Math.floor(Math.random()*5).toString(); document.getElementById('gps_stale').textContent = 'T';
+                document.getElementById('dist_home').textContent = 'N/A';
+            }
+            document.getElementById('altitude').textContent = (Math.random()*100).toFixed(1);
+            document.getElementById('speed').textContent = (Math.random()*40).toFixed(1);
+            const states = ["DISARMED_IDLE", "ARMED_MANUAL", "RTH_NAVIGATING", "LANDING_SEQUENCE"];
+            const currentState = states[Math.floor(Math.random() * states.length)];
+            document.getElementById('drone_state').textContent = currentState;
+            document.getElementById('imu_stale').textContent = Math.random() < 0.05 ? 'T' : 'F';
+            
+            document.getElementById('ctrl_throttle').textContent = (Math.random()).toFixed(2);
+            document.getElementById('ctrl_pitch').textContent = (Math.random()*2-1).toFixed(2);
+            document.getElementById('ctrl_roll').textContent = (Math.random()*2-1).toFixed(2);
+            document.getElementById('ctrl_yaw_stick').textContent = (Math.random()*2-1).toFixed(2);
+
+            const armStatusDiv = document.getElementById('arm_status_corner');
+            if (currentState.includes("ARMED") || currentState.includes("RTH")) { armStatusDiv.textContent = "ARMED"; armStatusDiv.className = "status-armed"; }
+            else { armStatusDiv.textContent = "DISARMED"; armStatusDiv.className = "status-disarmed"; }
+            
+            const messages = ["SYSTEM OK", "LOW BATTERY", "GPS GLITCH", "RC FAILSAFE!", "CRITICAL BATTERY!", "OBSTACLE NEAR"];
+            const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+            const statusMsgDiv = document.getElementById('status_message_display');
+            statusMsgDiv.textContent = randomMsg;
+            statusMsgDiv.className = "hud-text-block bottom-center-message ";
+            if (randomMsg.includes("CRITICAL") || randomMsg.includes("FAILSAFE")) statusMsgDiv.classList.add("critical-message");
+            else if (randomMsg !== "SYSTEM OK") statusMsgDiv.classList.add("warning-message");
+        }
+        setInterval(updateSimulatedHUD, 250);
+        updateSimulatedHUD(); // Initial call
+    </script>
+</body>
+</html>
