@@ -14,7 +14,15 @@ class DroneConfig:
         self.MAX_SPEED_PROXY = 1.0; self.MIN_SAFE_DISTANCE_CM = 30; self.MAX_SAFE_DISTANCE_CM = 200
         self.SPEED_TO_DISTANCE_FACTOR_CM_PER_UNIT = 70; self.ULTRASONIC_TIMEOUT = 0.05
         self.RETURN_HOME_MIN_DIST_METERS = 5; self.LOW_BATTERY_THRESHOLD_PERCENT = 15.0; self.RTH_ALTITUDE_METERS = 20
-        self.VIDEO_STREAM_PORT = 8000; self.VIDEO_WIDTH = 640; self.VIDEO_HEIGHT = 480; self.VIDEO_FPS = 30; self.HUD_TEXT_COLOR = [0, 255, 0] # JSON uses lists for tuples
+        
+        # Video Stream - Changed for MJPEG
+        self.MJPEG_HTTP_PORT = 8080 # Port for the MJPEG HTTP stream
+        self.VIDEO_WIDTH = 640
+        self.VIDEO_HEIGHT = 480
+        self.VIDEO_FPS = 20 # MJPEG can be demanding, might need to lower FPS
+        self.MJPEG_QUALITY = 75 # JPEG quality (0-100)
+        self.HUD_TEXT_COLOR = [0, 255, 0]
+
         self.GPS_PORT = "/dev/ttyAMA0"; self.GPS_BAUDRATE = 9600; self.GPS_TIMEOUT = 1; self.GPS_POLL_INTERVAL = 0.2; self.EARTH_RADIUS_KM = 6371
         self.PS5_BUTTON_X = 0; self.PS5_BUTTON_O = 1; self.BOOT_HOLD_TIME_SEC = 5; self.SHUTDOWN_HOLD_TIME_SEC = 3; self.CONTROLLER_REINIT_INTERVAL = 5.0
         self.PID_PITCH_KP, self.PID_PITCH_KI, self.PID_PITCH_KD = 1.5, 0.01, 0.6; self.PID_ROLL_KP, self.PID_ROLL_KI, self.PID_ROLL_KD = 1.5, 0.01, 0.6

@@ -2,7 +2,7 @@
 
 ## Credits
 
-* [Faiz Patel   ]
+* Faiz Patel
 
 ## Warning and Disclaimer of Liability
 
@@ -14,13 +14,14 @@
 
 ## Intellectual Property and Contact
 
-* **Copyright (c) [Yea2025] [Faiz Patel]**
+* **Copyright (c) 2025 Faiz Patel**
 * All rights reserved.
 * For inquiries, please contact: [patelfaiz333@gmail.com]
 
 This software is provided for educational, research, and personal hobbyist purposes. If you intend to use this for commercial purposes, ensure you fully comply with all applicable commercial drone operation regulations, insurance requirements, and safety standards.
 
 This project implements a comprehensive flight controller software for a Raspberry Pi-based drone, featuring autonomous capabilities, sensor integration, failsafes, and GCS communication.
+
 
 ## Features
 
@@ -31,7 +32,7 @@ This project implements a comprehensive flight controller software for a Raspber
 * **GPS Integration:** For position hold (future), Return-To-Home (RTH), and telemetry.
 * **Obstacle Avoidance:** Basic collision detection and avoidance using ultrasonic sensors.
 * **PS5 Controller Input:** Uses a PS5 DualSense controller for manual flight control and system commands.
-* **Video Streaming:** Streams video with an overlaid telemetry HUD.
+* **Video Streaming:** Streams video with an overlaid telemetry HUD via **MJPEG over HTTP**, compatible with VLC and web browsers.
 * **GCS Communication (UDP):**
     * Sends detailed telemetry to a Ground Control Station.
     * Receives basic commands from a GCS (e.g., ARM, DISARM, START_RTH, START_CALIBRATION).
@@ -143,8 +144,8 @@ This project implements a comprehensive flight controller software for a Raspber
 
 1.  **`drone_config.json`:**
     * Located in the project directory. **Review and edit this file before the first flight.**
-    * Key parameters: Pin configurations, PID gains, calibration offsets (updated by routines), failsafe settings, GCS IP/Port.
-    * A default file is created if not found.
+    * Key parameters: Pin configurations, PID gains, calibration offsets (updated by routines), failsafe settings, GCS IP/Port, **`MJPEG_HTTP_PORT`**, **`MJPEG_QUALITY`**.
+    * A default file is created if not found. Ensure `MJPEG_HTTP_PORT` is set (e.g., 8080).
 
 2.  **PS5 Controller Pairing:** Pair via Bluetooth or connect via USB.
 
@@ -173,6 +174,28 @@ This project implements a comprehensive flight controller software for a Raspber
     * Enable: `sudo systemctl daemon-reload && sudo systemctl enable drone.service && sudo systemctl start drone.service`
     * Check: `sudo systemctl status drone.service` and `journalctl -u drone.service -f`
 
+## Viewing the Video Stream
+
+The drone streams video with an overlaid HUD using **MJPEG over HTTP**. This stream can be viewed using VLC media player or most modern web browsers.
+
+**Steps to View:**
+
+1.  **Ensure the drone software is running** on the Raspberry Pi and the `TelemetryHUDStreamer` has started its MJPEG HTTP server.
+2.  **Find your Raspberry Pi's IP Address:** On the Pi, use the command `hostname -I`.
+3.  **Open VLC Media Player or a Web Browser** on a computer or mobile device on the same network as the Raspberry Pi.
+4.  **Enter the Stream URL:**
+    * The URL will be: `http://<RASPBERRY_PI_IP_ADDRESS>:<MJPEG_HTTP_PORT>/stream.mjpg`
+    * Replace `<RASPBERRY_PI_IP_ADDRESS>` with the actual IP address of your Raspberry Pi.
+    * Replace `<MJPEG_HTTP_PORT>` with the port number configured in your `drone_config.json` (default is `8080`).
+    * **Example:** `http://192.168.1.101:8080/stream.mjpg`
+5.  **In VLC:**
+    * Go to "Media" -> "Open Network Stream..."
+    * Paste the URL into the network URL field and click "Play".
+6.  **In a Web Browser (e.g., Chrome, Firefox):**
+    * Simply type the URL into the address bar and press Enter. The browser should display the video stream.
+
+The video stream will show the live camera feed with telemetry data overlaid.
+
 ## GCS Communication
 
 * Drone listens for commands on UDP port `GCS_COMMAND_PORT` (default: 14550).
@@ -187,5 +210,3 @@ This project implements a comprehensive flight controller software for a Raspber
 * **Accelerometer/Magnetometer:** (Stubs) Follow on-screen/GCS prompts for positioning/movement.
 * Successful calibration updates values that can be saved to `drone_config.json` via a `SAVE_CONFIG` GCS command.
 * **Sensor calibration is CRITICAL for stable and safe flight.**
-
-
