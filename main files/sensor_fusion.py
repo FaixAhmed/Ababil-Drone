@@ -111,7 +111,8 @@ class SensorFusion:
     def start(self):
         if self.mpu: self._running=True; self._thread=Thread(target=self._sensor_thread_func,daemon=True,name="SensorFusionThread"); self._thread.start()
         else: logger.error("Cannot start SensorFusion: MPU6050 not initialized.")
-    def stop(self): self._running=False;
+    def stop(self):
+        self._running=False
         if self._thread and self._thread.is_alive(): self._thread.join(timeout=0.5)
     def get_orientation_with_status(self):
         with self.lock:

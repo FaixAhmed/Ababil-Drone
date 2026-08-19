@@ -321,7 +321,7 @@ class TelemetryHUDStreamer:
         g_str=f"GPS:{g_lat:.5f},{g_lon:.5f}" if g_lat and g_lon and g_fix>0 else "GPS:NoFix"
         put_text(g_str,10,y_offset_top+2); put_text(f"FIX:{g_fix} SAT:{g_sats} Stale:{telemetry.get('gps_stale',True)}",10,y_offset_top+3)
         dist_home = telemetry.get('dist_to_home_m', float('nan'))
-        dist_home_str = f"HomeD:{dist_home:.1f}m" if not math.isnan(dist_home) else "HomeD:N/A"
+        dist_home_str = f"HomeD:{dist_home:.1f}m" if math.isfinite(dist_home) else "HomeD:N/A"
         put_text(dist_home_str, 10, y_offset_top+4)
         put_text(f"P:{pitch:.1f} R:{roll:.1f}", 10, y_offset_top+5) # Pitch/Roll values near AH
 

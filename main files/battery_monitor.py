@@ -38,7 +38,8 @@ class BatteryMonitor:
         logger.info("Battery monitor thread stopped.")
 
     def start(self): self._running=True; self._thread=Thread(target=self._monitor_thread_func,daemon=True,name="BatteryMonitorThread"); self._thread.start()
-    def stop(self): self._running=False;
+    def stop(self):
+        self._running=False
         if self._thread and self._thread.is_alive(): self._thread.join(timeout=1.0)
     def get_level_percentage(self):
         with self.lock: return self.current_percentage

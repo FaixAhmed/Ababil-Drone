@@ -4,6 +4,12 @@
 
 * Faiz Patel
 
+## Recent Fixes
+
+* Fixed three `IndentationError`-causing syntax bugs (`sensor_fusion.py`, `battery_monitor.py`, `drone_main.py`) that previously prevented the flight controller from starting at all.
+* Fixed `get_hud_telemetry_data()` to include home position, distance-to-home, controller stick inputs, and status message so the video HUD overlay actually displays them.
+* Fixed a PID controller bug where the derivative term spiked on the first control tick after arming.
+
 ## Warning and Disclaimer of Liability
 
 * **Safety First:** Operating drones, especially custom-built ones, carries significant risks of injury and property damage.

@@ -78,9 +78,19 @@ class Drone:
     def _sig_exit(self,sig,frame): logger.info(f"Signal {signal.Signals(sig).name} received. Shutdown state."); self.running=False; self.transition_to_state(DroneState.SHUTTING_DOWN)
     def get_hud_telemetry_data(self):
         p,r,y,imu_s,_=self.sensor_fusion.get_orientation_with_status(); gps=self.gps_mgr.get_data_with_status()
+        bat_lvl=self.battery_mon.get_level_percentage(); ctrl=self.ctrl_mgr.axis_values
+        dist_home=haversine_distance(gps.get('lat'),gps.get('lon'),gps.get('home_lat'),gps.get('home_lon'),self.config.EARTH_RADIUS_KM)
+        status_msg=""
+        if self.current_state==DroneState.EMERGENCY_LANDING: status_msg="CRITICAL BATTERY!"
+        elif self.current_state==DroneState.FAILSAFE_RC_TRIGGERED: status_msg="RC FAILSAFE!"
+        elif self.current_state==DroneState.FAILSAFE_GPS_TRIGGERED: status_msg="GPS FAILSAFE!"
+        elif bat_lvl < self.config.LOW_BATTERY_THRESHOLD_PERCENT: status_msg="LOW BATTERY"
         return {'pitch':p,'roll':r,'yaw':y,'imu_stale':imu_s, 'gps_lat':gps.get('lat'),'gps_lon':gps.get('lon'),'gps_alt':gps.get('alt',0.0),
                 'gps_speed_kmh':gps.get('speed_kmh',0.0),'gps_fix_quality':gps.get('fix_quality',0),'gps_num_satellites':gps.get('num_satellites',0),
-                'gps_stale':gps.get('is_stale',True),'battery_level':self.battery_mon.get_level_percentage(),'system_armed':self.is_armed_or_arming(),'current_state':self.current_state.name}
+                'gps_stale':gps.get('is_stale',True),'battery_level':bat_lvl,'system_armed':self.is_armed_or_arming(),'current_state':self.current_state.name,
+                'target_yaw':self.target_yaw_heading,'home_lat':gps.get('home_lat'),'home_lon':gps.get('home_lon'),'dist_to_home_m':dist_home,
+                'ctrl_throttle':ctrl.get('throttle',0.0),'ctrl_pitch':ctrl.get('pitch',0.0),'ctrl_roll':ctrl.get('roll',0.0),'ctrl_yaw_stick':ctrl.get('yaw',0.0),
+                'status_message':status_msg}
     def get_full_telemetry_data_for_gcs(self):
         data = self.get_hud_telemetry_data(); gx,gy,gz,g_stale = self.sensor_fusion.get_gyro_rates_with_status()
         data.update({'target_yaw':self.target_yaw_heading, 'loop_dt_ms':(time.time()-self.last_loop_time)*1000 if self.last_loop_time else 0,
@@ -316,7 +326,8 @@ if __name__ == "__main__":
         setup_logging(log_level_str=initial_conf.LOG_LEVEL, log_file=initial_conf.LOG_FILE)
         drone_instance = Drone(config_filepath="drone_config.json") 
         drone_instance.run_flight_loop()
-    except Exception as e: logger.critical(f"FATAL MAIN ERROR (pre-loop or unhandled): {e}", exc_info=True)
+    except Exception as e:
+        logger.critical(f"FATAL MAIN ERROR (pre-loop or unhandled): {e}", exc_info=True)
         if drone_instance and drone_instance.current_state != DroneState.SHUTTING_DOWN :
             drone_instance.transition_to_state(DroneState.ERROR_STATE) # Attempt to go to error state
             drone_instance.perform_shutdown() # Then try to shut down components

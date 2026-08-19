@@ -19,6 +19,7 @@ class PID:
         if self.last_time is None:
             self.last_time = current_time
             error_on_first_call = target - current
+            self.prev_error = error_on_first_call
             return clamp(self.kp * error_on_first_call, self.output_limits[0], self.output_limits[1])
 
         dt = current_time - self.last_time
