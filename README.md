@@ -1,32 +1,38 @@
 # Raspberry Pi Drone Flight Controller
 
-## Credits
+This project implements a comprehensive flight controller software framework for a Raspberry Pi-based drone, featuring stabilization mechanics, sensor integration, failsafes, and Ground Control Station (GCS) communication.
 
-* Faiz Patel
+---
 
-## Recent Fixes
+## ⚠️ WARNING OF LIABILITY & COMPLIANCE
 
-* Fixed three `IndentationError`-causing syntax bugs (`sensor_fusion.py`, `battery_monitor.py`, `drone_main.py`) that previously prevented the flight controller from starting at all.
-* Fixed `get_hud_telemetry_data()` to include home position, distance-to-home, controller stick inputs, and status message so the video HUD overlay actually displays them.
-* Fixed a PID controller bug where the derivative term spiked on the first control tick after arming.
+**By downloading, compiling, or using this codebase, you legally declare that you understand and agree to the following terms:**
 
-## Warning and Disclaimer of Liability
-
-* **Safety First:** Operating drones, especially custom-built ones, carries significant risks of injury and property damage.
-* **Thorough Testing:** Always test in a safe, open area, away from people, animals, and property. Start all tests with **propellers removed** to verify system responses.
+* **Safety First:** Operating drones, especially custom-built ones, carries significant risks of injury and property damage. Always start all tests with **propellers removed** to verify system responses.
 * **Local Regulations:** You are solely responsible for understanding and complying with all local and national drone regulations (e.g., CAA rules in the UK) before flying.
-* **No Guarantees:** This software is provided "as-is" without any warranties, express or implied. The creators and contributors are not liable for any damages or injuries arising from the use or misuse of this software or the drone built using it.
-* **Unauthorized Use:** This software is intended for lawful and responsible use. Any use of this software for illegal activities, unauthorized surveillance, or any purpose that infringes on the rights or safety of others is strictly prohibited. The user assumes all liability for such unauthorized use.
+* **Absolute Liability Shield:** This drone software framework is intended strictly for civilian, educational, and peaceful recreation or industrial use. This software is provided **"AS IS"** under the **Apache License 2.0** without any warranties, express or implied. The author and contributors are not liable for any damages, legal issues, or injuries arising from the use or misuse of this software.
+* **National Security Sanctions:** The author explicitly prohibits and denounces the use of this software by any sanctioned entities, anti-national actors, insurgent groups, or terrorist organizations. 
+* **User Warranty:** You warrant that you are not located in a country subject to international or regional government embargoes/sanctions, and that you are not associated with any prohibited, restricted, or paramilitary groups. You assume 100% personal and legal responsibility for any physical flight operations.
 
-## Intellectual Property and Contact
+---
 
-* **Copyright (c) 2025 Faiz Patel**
-* All rights reserved.
-* For inquiries, please contact: [patelfaiz333@gmail.com]
+## 🛠 Recent Fixes
 
-This software is provided for educational, research, and personal hobbyist purposes. If you intend to use this for commercial purposes, ensure you fully comply with all applicable commercial drone operation regulations, insurance requirements, and safety standards.
+* **Syntax Corrections:** Fixed three `IndentationError`-causing bugs (`sensor_fusion.py`, `battery_monitor.py`, `drone_main.py`) that previously prevented the flight controller from starting.
+* **HUD Overlay:** Fixed `get_hud_telemetry_data()` to correctly populate and stream home position, distance-to-home, controller stick inputs, and system status messages to the video HUD.
+* **PID Stability:** Fixed a PID controller mathematical bug where the derivative term spiked unnaturally on the first control tick immediately after arming.
 
-This project implements a comprehensive flight controller software for a Raspberry Pi-based drone, featuring autonomous capabilities, sensor integration, failsafes, and GCS communication.
+---
+
+## 👥 Credits & Intellectual Property
+
+* **Author:** Faiz Patel
+* **Copyright:** Copyright (c) 2025-2026 Faiz Patel
+* **License:** Licensed under the **Apache License, Version 2.0** (the "License"). You may use this file except in compliance with the License. You may obtain a copy of the License in the accompanying `LICENSE` file or at [http://apache.org](http://apache.org).
+
+### Contact & Inquiries
+For legitimate research collaboration, educational use, or commercial inquiries regarding compliance, insurance standards, and commercial operational safety, please contact: **patelfaiz333@gmail.com**
+
 
 
 ## Features
