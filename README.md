@@ -1,4 +1,4 @@
-# Raspberry Pi Drone Flight Controller
+# Ababil — Raspberry Pi Drone Flight Controller
 
 This project implements a comprehensive flight controller software framework for a Raspberry Pi-based drone, featuring stabilization mechanics, sensor integration, failsafes, and Ground Control Station (GCS) communication.
 
@@ -150,7 +150,7 @@ For legitimate research collaboration, educational use, or commercial inquiries 
     * *(For OpenCV, additional system libraries might be needed if installation fails).*
 
 5.  **Clone the Repository (or Copy Files):**
-    * `git clone <your-repository-url>` and `cd <your-repository-name>` OR copy files to `/home/pi/drone_project`.
+    * `git clone https://github.com/FaixAhmed/Ababil.git` and `cd Ababil` OR copy files to `/home/pi/Ababil`.
 
 ## Configuration
 
@@ -163,7 +163,7 @@ For legitimate research collaboration, educational use, or commercial inquiries 
 
 ## Running the Drone Software
 
-1.  Navigate to project directory: `cd /path/to/your/drone_project`
+1.  Navigate to project directory: `cd /path/to/your/Ababil`
 2.  Run (requires sudo): `sudo python3 drone_main.py`
 3.  **To run on boot (recommended):** Use `systemd`. Create `/etc/systemd/system/drone.service`:
     ```ini
@@ -172,8 +172,8 @@ For legitimate research collaboration, educational use, or commercial inquiries 
     After=network.target multi-user.target
 
     [Service]
-    ExecStart=/usr/bin/python3 /home/pi/drone_project/drone_main.py
-    WorkingDirectory=/home/pi/drone_project/
+    ExecStart=/usr/bin/python3 /home/pi/Ababil/drone_main.py
+    WorkingDirectory=/home/pi/Ababil/
     StandardOutput=journal
     StandardError=journal
     Restart=on-failure
