@@ -138,7 +138,7 @@ This project implements a comprehensive flight controller software for a Raspber
     * *(For OpenCV, additional system libraries might be needed if installation fails).*
 
 5.  **Clone the Repository (or Copy Files):**
-    * `git clone https://github.com/FaixAhmed/Ababil.git` and `cd Ababil` OR copy files to `/home/pi/Ababil`.
+    * `git clone https://github.com/FaixAhmed/Ababil-Drone.git` and `cd Ababil-Drone` OR copy files to `/home/pi/Ababil`.
 
 ## Configuration
 
